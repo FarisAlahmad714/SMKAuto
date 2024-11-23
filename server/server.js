@@ -1,19 +1,23 @@
 const express = require('express');
 const cors = require('cors');
-const { Sequelize } = require('sequelize');
+const sequelize = require('./config/database');
+const vehicleRoutes = require('./routes/vehicleRoutes');
 
 const app = express();
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite'
-});
 
 app.use(cors());
 app.use(express.json());
+
+// Add routes
+app.use('/api', vehicleRoutes);
 
 sequelize.authenticate()
   .then(() => console.log('Connected to SQLite'))
   .catch(err => console.error('Database connection error:', err));
 
-const PORT = process.env.PORT || 5000;
+sequelize.sync({ force: true })
+  .then(() => console.log('Database synced'))
+  .catch(err => console.error('Error syncing database:', err));
+
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

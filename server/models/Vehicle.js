@@ -3,6 +3,10 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Vehicle = sequelize.define('Vehicle', {
+  stockNumber: {
+    type: DataTypes.STRING,
+    unique: true,
+  },
   make: {
     type: DataTypes.STRING,
     allowNull: false
@@ -23,21 +27,16 @@ const Vehicle = sequelize.define('Vehicle', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  transmission: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  exteriorColor: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
+  transmission: DataTypes.STRING,
+  exteriorColor: DataTypes.STRING,
   status: {
-    type: DataTypes.ENUM('available', 'sold', 'pending'),
+    type: DataTypes.STRING,
     defaultValue: 'available'
   },
-  stockNumber: {
-    type: DataTypes.STRING,
-    unique: true
+  description: DataTypes.TEXT,
+  images: {
+    type: DataTypes.JSON,
+    defaultValue: []
   }
 });
 

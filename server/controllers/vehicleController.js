@@ -1,17 +1,20 @@
-// server/src/controllers/vehicleController.js
+// server/controllers/vehicleController.js
 const Vehicle = require('../models/Vehicle');
 
 const vehicleController = {
-  create: async (req, res) => {
+  async create(req, res) {
     try {
-      const vehicle = await Vehicle.create(req.body);
+      const vehicle = await Vehicle.create({
+        ...req.body,
+        stockNumber: `SMK${Math.floor(Math.random() * 90000) + 10000}`
+      });
       res.status(201).json(vehicle);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   },
 
-  getAll: async (req, res) => {
+  async getAll(req, res) {
     try {
       const vehicles = await Vehicle.findAll();
       res.json(vehicles);
@@ -20,7 +23,7 @@ const vehicleController = {
     }
   },
 
-  getOne: async (req, res) => {
+  async getOne(req, res) {
     try {
       const vehicle = await Vehicle.findByPk(req.params.id);
       if (vehicle) {
@@ -28,6 +31,32 @@ const vehicleController = {
       } else {
         res.status(404).json({ error: 'Vehicle not found' });
       }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async update(req, res) {
+    try {
+      const vehicle = await Vehicle.findByPk(req.params.id);
+      if (!vehicle) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      await vehicle.update(req.body);
+      res.json(vehicle);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async delete(req, res) {
+    try {
+      const vehicle = await Vehicle.findByPk(req.params.id);
+      if (!vehicle) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      await vehicle.destroy();
+      res.json({ message: 'Vehicle deleted successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
